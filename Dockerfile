@@ -1,16 +1,22 @@
 # Start from latest ubuntu
 FROM ubuntu:latest
-ARG DEBIAN_FRONTEND=noninteractive
 
-# this is home for root user
-WORKDIR /root
+# disable apt-get questions
+ARG DEBIAN_FRONTEND=noninteractive 
+
+MAINTAINER Neven Golenic <neven.golenic@gmail.com>
+
+# installation dir
+WORKDIR /tmp
+
+# apt-get dependencies variables, ref by $varname
+ARG buildDeps="git"
+ARG runtimeDeps="gawk libopenblas-base libgomp1 make openssh-client openmpi-bin vim zlib1g git g++ libopenblas-dev libopenmpi-dev xxd zlib1g-dev"
 
 # install libraries and plumed
-RUN buildDeps="git" \
- && runtimeDeps="gawk libopenblas-base libgomp1 make openssh-client openmpi-bin vim zlib1g git g++ libopenblas-dev libopenmpi-dev xxd zlib1g-dev" \
- && apt-get -yq update \
+RUN apt-get -yq update \
  && apt-get -yq upgrade \
- && apt-get -yq install $buildDeps --no-install-recommends
+ && apt-get -yq install $buildDeps $runtimeDeps --no-install-recommends
 
 # clones plumed into
 RUN git clone --branch v2.4.4 git://github.com/plumed/plumed2.git
@@ -28,6 +34,6 @@ RUN cd plumed2 \
 RUN useradd -ms /bin/bash plumed
 USER plumed
 WORKDIR /home/plumed
-# by default enter bashs
+# by default enter bash
 CMD ["bash"]
 
