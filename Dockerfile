@@ -15,7 +15,7 @@ WORKDIR $work
 ARG plumed_buildDeps="git"
 ARG plumed_runtimeDeps="gawk libopenblas-base libgomp1 make openssh-client openmpi-bin vim zlib1g git g++ libopenblas-dev libopenmpi-dev xxd zlib1g-dev"
 #ARG cuda_buildDeps="cuda-compiler-10-0"
-ARG gromacs_buildDeps="hwloc cmake"
+ARG gromacs_buildDeps="hwloc python cmake"
 ARG gromacs_runtimeDeps="libfftw3-dev"
 
 # install libraries and plumed
@@ -49,7 +49,7 @@ RUN cd gromacs \
  && cd build \
  && cmake .. -DGMX_SIMD=AVX_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on -DCMAKE_INSTALL_PREFIX=/usr/local \
  && make -j$(nproc) \
- && make install \
+ && make install
 # && apt-get purge -y --auto-remove $gromacs_buildDeps \
 # && apt-get update && apt-get -yq install $gromacs_runtimeDeps --no-install-recommends \
 # && rm -rf /var/lib/apt/lists/*
