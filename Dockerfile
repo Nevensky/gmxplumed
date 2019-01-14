@@ -14,8 +14,9 @@ WORKDIR $work
 # apt-get dependencies variables, ref by $varname
 ARG plumed_buildDeps="git"
 ARG plumed_runtimeDeps="gawk libopenblas-base libgomp1 make openssh-client openmpi-bin vim zlib1g git g++ libopenblas-dev libopenmpi-dev xxd zlib1g-dev"
-ARG cuda_buildDeps="cuda-compiler-10-0"
-ARG gromacs_buildDeps="libfftw3-dev hwloc cmake"
+#ARG cuda_buildDeps="cuda-compiler-10-0"
+ARG gromacs_buildDeps="hwloc cmake"
+ARG gromacs_runtimeDeps="libfftw3-dev"
 
 # install libraries and plumed
 RUN apt-get -yq update \
@@ -33,7 +34,7 @@ RUN cd plumed2 \
  && cd ../ \
  && rm -rf plumed2 \
  && apt-get purge -y --auto-remove $plumed_buildDeps \
- && apt-get update && apt-get -yq install $plumed_runtimeDeps --no-install-recommends \
+ && apt-get update && apt-get -yq install $plumed_runtimeDeps $gromacs_buildDeps $gromacs_runtimeDeps --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 
 # return to workdir and clone gromacs
@@ -43,11 +44,15 @@ RUN git clone --branch v2018.4 https://github.com/gromacs/gromacs.git
 # patch gromacs with plumed and compile
 RUN cd gromacs \
  && plumed patch -p --runtime -e gromacs-2018.4 \
+# && apt-get update && apt-get -yq install $gromacs_buildDeps $gromacs_runtimeDeps --no-install-recommends \
  && mkdir build \
  && cd build \
  && cmake .. -DGMX_SIMD=AVX_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on -DCMAKE_INSTALL_PREFIX=/usr/local \
  && make -j$(nproc) \
- && make install
+ && make install \
+# && apt-get purge -y --auto-remove $gromacs_buildDeps \
+# && apt-get update && apt-get -yq install $gromacs_runtimeDeps --no-install-recommends \
+# && rm -rf /var/lib/apt/lists/*
 
 #MPI cmake (if needed): DGMX_MPI=on -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx
 
