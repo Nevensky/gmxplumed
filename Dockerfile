@@ -44,16 +44,21 @@ RUN cd gromacs \
 # && apt-get update && apt-get -yq install $gromacs_buildDeps $gromacs_runtimeDeps --no-install-recommends \
  && mkdir build \
  && cd build \
- && cmake .. -DGMX_SIMD=AVX_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on -DCMAKE_INSTALL_PREFIX=/usr/local/gromacs \
+ && cmake .. -DGMX_SIMD=AVX2_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on -DCMAKE_INSTALL_PREFIX=/usr/local/gromacs \
  && make -j$(nproc) \
  && make install \
+ && cd ../../ \
+ && rm -rf gromacs \
  && apt-get purge -y --auto-remove $plumed_buildDeps $gromacs_buildDeps \
  && apt-get update && apt-get -yq install $plumed_runtimeDeps $gromacs_runtimeDeps --no-install-recommends \
  && rm -rf /var/lib/apt/lists/*
 
-ENV PATH="/usr/local/gromacs:${PATH}"
 
 #MPI cmake (if needed): DGMX_MPI=on -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx
+
+
+# export gromacs binary to path
+ENV PATH="/usr/local/gromacs/bin:${PATH}"
 
 
 # switch to plumgrompy-gpu user
