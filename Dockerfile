@@ -34,9 +34,10 @@ RUN cd plumed2 \
  && cd ../ \
  && rm -rf plumed2
 
-# export plumed binary to path
+# set plumed env vars
 ENV PATH="/usr/local/plumed/bin:${PATH}"
-ENV PLUMED_KERNEL=/usr/local/plumed/lib/libplumedKernel.so
+ENV PLUMED_KERNEL="/usr/local/plumed/lib/libplumedKernel.so"
+ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/plumed/lib/"
 
 # return to workdir and clone gromacs
 WORKDIR $work
@@ -69,7 +70,7 @@ USER plumgrompy
 WORKDIR $work
 
 # source gromacs env vars
-RUN ["source /usr/local/gromacs/bin/GMXRC"]
+RUN /bin/bash -c "source /usr/local/gromacs/bin/GMXRC.bash"
 
 # print gromacs and plumed versions
 CMD ["gmx","--version"]
