@@ -13,7 +13,7 @@ WORKDIR $work
 
 # apt-get dependencies variables, ref by $varname
 ARG plumed_buildDeps="git"
-ARG plumed_runtimeDeps="gawk libopenblas-base libgomp1 make openssh-client openmpi-bin vim zlib1g git g++ libopenblas-dev libopenmpi-dev xxd zlib1g-dev"
+ARG plumed_runtimeDeps="gawk libopenblas-base libgomp1 make openssh-client openmpi-bin vim zlib1g git g++ libopenblas-dev libopenmpi-dev libmatheval-dev xxd zlib1g-dev"
 #ARG cuda_buildDeps="cuda-compiler-10-0"
 ARG gromacs_buildDeps="cmake"
 ARG gromacs_runtimeDeps="libfftw3-dev hwloc python"
@@ -28,7 +28,7 @@ RUN git clone --branch v2.4.4 git://github.com/plumed/plumed2.git
 
 # compile plumed
 RUN cd plumed2 \
- && ./configure --enable-modules=all CXXFLAGS=-O3 \
+ && ./configure --prefix=/usr/local/plumed --enable-modules=all CXXFLAGS="-O3 -axAVX" \
  && make -j$(nproc) \
  && make install \
  && cd ../ \
@@ -60,11 +60,18 @@ RUN cd gromacs \
 # export gromacs binary to path
 ENV PATH="/usr/local/gromacs/bin:${PATH}"
 
-
-# switch to plumgrompy-gpu user
-RUN useradd -ms /bin/bash plumgrompy-gpu
-USER plumgrompy-gpu
+# switch to plumgrompy user
+RUN ["useradd","-ms","/bin/bash","plumgrompy"]
+USER plumgrompy
 WORKDIR $work
+
+# source gromacs env vars
+RUN ["source /usr/local/gromacs/bin/GMXRC"]
+
+# print gromacs and plumed versions
+CMD ["gmx","--version"]
+CMD ["echo","Plumed version:","$(plumed info --long-version)"]
+
 # by default enter bash
 CMD ["bash"]
 
