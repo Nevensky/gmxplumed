@@ -24,11 +24,11 @@ RUN apt-get -yq update \
  && apt-get -yq install $plumed_buildDeps $gromacs_buildDeps $plumed_runtimeDeps $gromacs_runtimeDeps --no-install-recommends
 
 # clone plumed into workdir
-RUN git clone --branch v2.4.4 git://github.com/plumed/plumed2.git
+RUN git clone --branch v2.5.0 https://github.com/plumed/plumed2.git
 
 # compile plumed
 RUN cd plumed2 \
- && ./configure --prefix=/usr/local/plumed --enable-modules=all CXXFLAGS="-O3 -axAVX" \
+ && ./configure --prefix=/usr/local/plumed --enable-modules=all  CXX=mpicxx CXXFLAGS="-O3 -axAVX" \
  && make -j$(nproc) \
  && make install \
  && cd ../ \
@@ -41,7 +41,6 @@ RUN git clone --branch v2018.4 https://github.com/gromacs/gromacs.git
 # patch gromacs with plumed and compile
 RUN cd gromacs \
  && plumed patch -p --runtime -e gromacs-2018.4 \
-# && apt-get update && apt-get -yq install $gromacs_buildDeps $gromacs_runtimeDeps --no-install-recommends \
  && mkdir build \
  && cd build \
  && cmake .. -DGMX_SIMD=AVX2_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on -DCMAKE_INSTALL_PREFIX=/usr/local/gromacs \
