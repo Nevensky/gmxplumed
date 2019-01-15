@@ -28,11 +28,14 @@ RUN git clone --branch v2.5.0 https://github.com/plumed/plumed2.git
 
 # compile plumed
 RUN cd plumed2 \
- && ./configure --prefix=/usr/local/plumed --enable-modules=all  CXX=mpicxx CXXFLAGS="-O3 -axAVX" \
+ && ./configure --prefix=/usr/local/plumed --enable-modules=all  CXX=mpicxx CXXFLAGS="-O3" \
  && make -j$(nproc) \
  && make install \
  && cd ../ \
  && rm -rf plumed2
+
+# export plumed binary to path
+ENV PATH="/usr/local/plumed/bin:${PATH}"
 
 # return to workdir and clone gromacs
 WORKDIR $work
