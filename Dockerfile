@@ -36,6 +36,7 @@ RUN cd plumed2 \
 
 # export plumed binary to path
 ENV PATH="/usr/local/plumed/bin:${PATH}"
+ENV PLUMED_KERNEL=/usr/local/plumed/lib/libplumedKernel.so
 
 # return to workdir and clone gromacs
 WORKDIR $work
@@ -46,7 +47,7 @@ RUN cd gromacs \
  && plumed patch -p --runtime -e gromacs-2018.4 \
  && mkdir build \
  && cd build \
- && cmake .. -DGMX_SIMD=AVX2_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on -DCMAKE_INSTALL_PREFIX=/usr/local/gromacs \
+ && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/gromacs -DGMX_SIMD=AVX2_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on  \
  && make -j$(nproc) \
  && make install \
  && cd ../../ \
