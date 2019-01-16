@@ -48,7 +48,7 @@ RUN cd gromacs \
  && plumed patch -p --runtime -e gromacs-2018.4 \
  && mkdir build \
  && cd build \
- && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/gromacs -DGMX_SIMD=AVX2_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on  \
+ && cmake .. -DCMAKE_INSTALL_PREFIX=/usr/local/gromacs -DGMX_SIMD=AVX2_256 -DGMX_BUILD_OWN_FFTW=off -DGMX_GPU=on -DGMX_USE_NVML=on \
  && make -j$(nproc) \
  && make install \
  && cd ../../ \
