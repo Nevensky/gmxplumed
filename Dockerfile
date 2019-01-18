@@ -72,10 +72,8 @@ WORKDIR $work
 # source gromacs env vars
 RUN /bin/bash -c "source /usr/local/gromacs/bin/GMXRC.bash"
 
-# print gromacs and plumed versions
-RUN ["gmx","--version"]
-RUN ["echo","Plumed version:","$(plumed info --long-version)"]
-
-# by default enter bash
-CMD ["bash"]
+# print gromacs and plumed versions and enter bash shell
+CMD gmx --version \
+  && echo "Plumed version: $(plumed info --long-version)" \
+  && bash
 
