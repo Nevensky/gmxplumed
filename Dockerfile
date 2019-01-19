@@ -30,8 +30,7 @@ WORKDIR $work/plumed2
 RUN ./configure --prefix="/usr/local/plumed" --enable-modules="all"  CXX="mpicxx" CXXFLAGS="-O3" \
  && make -j "$(nproc)" \
  && make install \
- && cd ../ \
- && rm -rf plumed2
+ && rm -rf ../plumed2
 
 # set plumed env vars
 ENV PATH="/usr/local/plumed/bin:${PATH}"
@@ -50,8 +49,7 @@ RUN plumed patch -p --runtime -e "gromacs-2018.4" \
  && cmake .. -DCMAKE_INSTALL_PREFIX="/usr/local/gromacs" -DGMX_SIMD="AVX2_256" -DGMX_BUILD_OWN_FFTW="off" -DGMX_GPU="on" -DGMX_USE_NVML="off" \
  && make -j "$(nproc)" \
  && make install \
- && cd ../../ \
- && rm -rf gromacs
+ && rm -rf ../../gromacs
 
 #MPI cmake (if needed): -DGMX_MPI=on -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx
 
