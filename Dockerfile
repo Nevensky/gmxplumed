@@ -45,8 +45,7 @@ RUN git clone --branch "v2018.4" https://github.com/gromacs/gromacs.git
 WORKDIR $work/gromacs
 RUN plumed patch -p --runtime -e "gromacs-2018.4" \
  && mkdir build \
- && cd build \
- && cmake .. -DCMAKE_INSTALL_PREFIX="/usr/local/gromacs" -DGMX_SIMD="AVX2_256" -DGMX_BUILD_OWN_FFTW="off" -DGMX_GPU="on" -DGMX_USE_NVML="off" \
+ && cmake -Bbuild -H. -DCMAKE_INSTALL_PREFIX="/usr/local/gromacs" -DGMX_SIMD="AVX2_256" -DGMX_BUILD_OWN_FFTW="off" -DGMX_GPU="on" -DGMX_USE_NVML="off" \
  && make -j "$(nproc)" \
  && make install \
  && rm -rf ../../gromacs
