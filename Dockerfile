@@ -46,7 +46,7 @@ WORKDIR $work/gromacs
 RUN plumed patch -p --runtime -e "gromacs-2018.4" \
  && mkdir -p build
 WORKDIR $work/gromacs/build
-RUN cmake -Bbuild -H. -DCMAKE_INSTALL_PREFIX="/usr/local/gromacs" -DGMX_SIMD="AVX2_256" -DGMX_BUILD_OWN_FFTW="off" -DGMX_GPU="on" -DGMX_USE_NVML="off" \
+RUN cmake .. -DCMAKE_INSTALL_PREFIX="/usr/local/gromacs" -DGMX_SIMD="AVX2_256" -DGMX_BUILD_OWN_FFTW="off" -DGMX_GPU="on" -DGMX_USE_NVML="off" \
  && make -j "$(nproc)" \
  && make install \
  && rm -rf ../../gromacs
