@@ -44,8 +44,9 @@ RUN git clone --branch "v2018.4" https://github.com/gromacs/gromacs.git
 # patch gromacs with plumed and compile
 WORKDIR $work/gromacs
 RUN plumed patch -p --runtime -e "gromacs-2018.4" \
- && mkdir build \
- && cmake -Bbuild -H. -DCMAKE_INSTALL_PREFIX="/usr/local/gromacs" -DGMX_SIMD="AVX2_256" -DGMX_BUILD_OWN_FFTW="off" -DGMX_GPU="on" -DGMX_USE_NVML="off" \
+ && mkdir -p build
+WORKDIR $work/gromacs/build
+RUN cmake -Bbuild -H. -DCMAKE_INSTALL_PREFIX="/usr/local/gromacs" -DGMX_SIMD="AVX2_256" -DGMX_BUILD_OWN_FFTW="off" -DGMX_GPU="on" -DGMX_USE_NVML="off" \
  && make -j "$(nproc)" \
  && make install \
  && rm -rf ../../gromacs
@@ -62,8 +63,8 @@ RUN apt-get purge -y --auto-remove $plumed_buildDeps $gromacs_buildDeps \
  && rm -rf /var/lib/apt/lists/*
 
 # switch to plumgrompy user
-RUN ["useradd","-ms","/bin/bash","plumgrompy"]
-USER plumgrompy
+RUN ["useradd","-ms","/bin/bash","gmxplumed"]
+USER gmxplumed
 WORKDIR $work
 
 # source gromacs env vars
