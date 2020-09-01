@@ -23,7 +23,7 @@ RUN apt-get -yq update \
  && rm -rf /var/lib/apt/lists/*
 
 # clone plumed into workdir
-RUN git clone --branch "v2.5.2" https://github.com/plumed/plumed2.git
+RUN git clone --branch "v2.6.1" https://github.com/plumed/plumed2.git
 
 # compile plumed
 WORKDIR $work/plumed2
@@ -39,7 +39,7 @@ ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/plumed/lib/"
 
 # return to workdir and clone gromacs
 WORKDIR $work
-RUN git clone --branch "v2019.2" https://github.com/gromacs/gromacs.git
+RUN git clone --branch "v2019.6" https://github.com/gromacs/gromacs.git
 
 # patch gromacs with plumed and compile
 WORKDIR $work/gromacs
