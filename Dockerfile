@@ -39,7 +39,7 @@ ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/plumed/lib/"
 
 # return to workdir and clone gromacs
 WORKDIR $work
-RUN git clone --branch "v2019.6" https://github.com/gromacs/gromacs.git
+RUN git clone --branch "v2020.2" https://github.com/gromacs/gromacs.git
 
 # patch gromacs with plumed and compile
 WORKDIR $work/gromacs
