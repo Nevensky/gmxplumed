@@ -39,11 +39,11 @@ ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/plumed/lib/"
 
 # return to workdir and clone gromacs
 WORKDIR $work
-RUN git clone --branch "v2019.6" https://github.com/gromacs/gromacs.git
+RUN git clone --branch "v2020.2" https://github.com/gromacs/gromacs.git
 
 # patch gromacs with plumed and compile
 WORKDIR $work/gromacs
-RUN plumed patch -p --runtime -e "gromacs-2019.2" \
+RUN plumed patch -p --runtime -e "gromacs-2020.2" \
  && mkdir -p build
 WORKDIR $work/gromacs/build
 RUN cmake .. -DCMAKE_INSTALL_PREFIX="/usr/local/gromacs" -DGMX_SIMD="AVX2_256" -DGMX_BUILD_OWN_FFTW="off" -DGMX_GPU="on" -DGMX_USE_NVML="off" \
